@@ -1,0 +1,40 @@
+﻿
+
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <NavLink class="navbar-brand" href="">
+            BookMyRoom
+        </NavLink>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav float-right">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="yourproperties">
+                        <span aria-hidden="true"></span> Your Properties
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="Login">
+                        <span aria-hidden="true"></span> Login / SignUp
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="postproperty">
+                        <span aria-hidden="true"></span> Post Property
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

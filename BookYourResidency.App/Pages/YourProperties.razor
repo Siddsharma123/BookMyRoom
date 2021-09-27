@@ -1,0 +1,15 @@
+﻿@page "/yourproperties"
+@inherits YourPropertiesBase
+@using BookYourResidency.App.Pages.Components
+
+@if (Properties == null || Properties.Count == 0)
+{
+    <div class="spinner-border"></div>
+}
+else
+{
+    @foreach (var prp in Properties)
+    {
+     <DisplayProperty Property="prp" ShowFooter="true"></DisplayProperty>
+    }
+}

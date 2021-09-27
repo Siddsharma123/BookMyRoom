@@ -1,0 +1,225 @@
+﻿@page "/postproperty"
+@inherits PostPropertyBase
+@using BookYourResidency.App.Custom
+<h3>Post Property</h3>
+@if (Success == true)
+{
+    <h4>Property has been post</h4>
+}
+else
+{
+    if (ErrorMessage != null)
+    {
+        <h4 class="font-italic text-danger">@ErrorMessage</h4>
+    }
+    <div class="my-4 border">
+        <EditForm Model="@PropertyInputModel" OnValidSubmit="SubmitHandledAsync">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="pNum">
+                        Contact Number
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <InputText id="pNum" class="form-control" @bind-Value="PropertyInputModel.Phone" placeholder="Enter Your Number"></InputText>
+                    <ValidationMessage For="@(() => PropertyInputModel.Phone)"></ValidationMessage>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="message">
+                        About :
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <InputTextArea class="form-control" id="message" @bind-Value="PropertyInputModel.Message" placeholder="Enter More About Your Property"></InputTextArea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <InputCheckbox id="sale" @bind-Value="PropertyInputModel.ForSale"></InputCheckbox>
+                    <label for="sale">Sale</label>
+                </div>
+                @if (PropertyInputModel.ForSale == true)
+                {
+                    <div class="col-md-6 row">
+                        <div class="col-md-4">
+                            <label for="salerate">Sale Rate</label>
+                        </div>
+                        <div class="col-md-8">
+                            <InputNumber id="salerate" class="form-control" @bind-Value="PropertyInputModel.SaleRate" placeholder="Enter Rate"></InputNumber>
+                            <ValidationMessage For="@(() => PropertyInputModel.SaleRate)"></ValidationMessage>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <InputCheckbox id="rent" @bind-Value="PropertyInputModel.ForRent"></InputCheckbox>
+                    <label for="rent">Rent</label>
+                </div>
+                @if (PropertyInputModel.ForRent == true)
+                {
+                    <div class="col-md-6 row">
+                        <div class="col-md-4">
+                            <label for="rentrate">Rent Rate</label>
+                        </div>
+                        <div class="col-md-8">
+                            <InputNumber id="rentrate" class="form-control" @bind-Value="PropertyInputModel.RentRate" placeholder="Enter Rate"></InputNumber>
+                            <ValidationMessage For="@(() => PropertyInputModel.RentRate)"></ValidationMessage>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (PropertyInputModel.ForSale || PropertyInputModel.ForRent)
+            {
+                <div class="form-group">
+                    <InputCheckbox id="negotiable" @bind-Value="PropertyInputModel.Negotiable"></InputCheckbox>
+                    <label for="negotiable">Negotiable</label>
+                </div>
+            }
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="avail">
+                        Select Availablility
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <InputNumberSelect class="form-control" id="avail" @bind-Value="PropertyInputModel.Availability">
+                        @foreach (var status in Enum.GetValues(typeof(Availability)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </InputNumberSelect>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="propType">
+                        Property Type
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <InputNumberSelect id="propType" @bind-Value="PropertyInputModel.PropertyTypeId" class="form-control">
+                        <option value="0">Select Property Type</option>
+                        @foreach (var item in PropertyTypes)
+                        {
+                            <option value="@item.PropertyTypeId">@item.Name</option>
+                        }
+                    </InputNumberSelect>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="tenantstype">
+                        Tenants Type
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <InputNumberSelect id="tenantstype" @bind-Value="PropertyInputModel.TenantsTypeId" class="form-control">
+                        <option value="0">Select a Tenants Type</option>
+                        @foreach (var item in TenantsTypes)
+                        {
+                            <option value="@item.TenantsTypeId">@item.Name</option>
+                        }
+                    </InputNumberSelect>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Country :</label>
+                    </div>
+                    <div class="col-md-8">
+                        <InputNumberSelect class="form-control" ValueChanged="@((int value) => CountryHasChanged(value))" ValueExpression="@(() => PropertyInputModel.CountryId)" Value="@PropertyInputModel.CountryId">
+                            <option value="0">Select a Country</option>
+                            @foreach (var item in Countries)
+                            {
+                                @if (item.CountryId == PropertyInputModel.CountryId)
+                                {
+                                    <option selected value="@item.CountryId">@item.Name</option>
+                                }
+                                <option value="@item.CountryId">@item.Name</option>
+                            }
+                        </InputNumberSelect>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4"><label>State</label></div>
+                    <div class="col-md-8">
+                        <InputNumberSelect class="form-control" ValueChanged="@((int value) => StateHasChanged(value))" ValueExpression="@(() => PropertyInputModel.StateId)" Value="@PropertyInputModel.StateId">
+                            <option value="0">Select a State</option>
+                            @foreach (var item in States)
+                            {
+                                @if (item.StateId == PropertyInputModel.StateId)
+                                {
+                                    <option selected value="@item.StateId">@item.Name</option>
+                                }
+                                <option value="@item.StateId">@item.Name</option>
+                            }
+                        </InputNumberSelect>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>City</label>
+                    </div>
+                    <div class="col-md-8">
+                        <InputNumberSelect class="form-control" ValueChanged="@((int value) => CityHasChanged(value))" ValueExpression="@(() => PropertyInputModel.CityId)" Value="@PropertyInputModel.CityId">
+                            <option value="0">Select a City</option>
+                            @foreach (var item in Cities)
+                            {
+                                @if (item.CityId == PropertyInputModel.CityId)
+                                {
+                                    <option selected value="@item.CityId">@item.Name</option>
+                                }
+                                <option value="@item.CityId">@item.Name</option>
+                            }
+                        </InputNumberSelect>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4"> <label>Locality</label></div>
+                    <div class="col-md-8">
+                        <InputNumberSelect class="form-control" @bind-Value="PropertyInputModel.LocalityId">
+                            <option value="0">Select a Localities</option>
+                            @foreach (var item in Localities)
+                            {
+                                <option value="@item.LocalityId">@item.Name</option>
+                            }
+                        </InputNumberSelect>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="image">Upload Images</label>
+                </div>
+                <div class="col-md-8">
+                    <InputFile OnChange="OnFileInputChangeAsync" multiple></InputFile>
+                </div>
+            </div>
+            <div class="row">
+                @if (imageDataUrls != null && imageDataUrls.Count > 0)
+                {
+                    <div class="col-md-12 justify-content-center">
+                        @foreach (var img in imageDataUrls)
+                        {
+                            <div class="border float-left m-2">
+                                <img src="@img" width="250" height="250" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-success" type="submit">Submit</button>
+            </div>
+        </EditForm>
+    </div>
+}
+

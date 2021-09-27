@@ -1,0 +1,80 @@
+﻿@inherits DisplayPropertyBase
+@using BlazorStrap
+@using BookYourResidency.App.Custom
+<div class="row border border-dark m-1" style="height:225px;">
+    <div class="col-sm-4">
+        @if (ImagesDataUrl.Count == 1)
+        {
+            <img class="d-block w-100" src="@ImagesDataUrl[0]">
+        }
+        else
+        {
+            <BSCarousel NumberOfItems="@ImagesDataUrl.Count">
+                <BSCarouselIndicators NumberOfItems="@ImagesDataUrl.Count" />
+                <div class="carousel-inner">
+                    @for (int i = 0; i < ImagesDataUrl.Count; i++)
+                    {
+                        var item = ImagesDataUrl[i];
+                        <BSCarouselItem src="@item" />
+                    }
+                </div>
+                <BSCarouselControl CarouselDirection="CarouselDirection.Previous" NumberOfItems="@ImagesDataUrl.Count" />
+                <BSCarouselControl CarouselDirection="CarouselDirection.Next" NumberOfItems="@ImagesDataUrl.Count" />
+            </BSCarousel>
+        }
+    </div>
+     <div class="col-sm-8">
+         <div class="row">
+             <div class="col-md-4">Property Type</div>
+             <div class="col-md-8">@Property.PropertyType.Name</div>
+         </div>
+         <div class="row">
+             <div class="col-md-4">Availability</div>
+             <div class="col-md-8">@Property.Availability</div>
+         </div>
+         <div class="row">
+             <div class="col-md-4">Address</div>
+             <div class="col-md-8">@(Property.Location.Country != null ? Property.Location.Country.Name : "") @(Property.Location.State != null ? Property.Location.State.Name : "")  @(Property.Location.City != null ? Property.Location.City.Name : "") @(Property.Location.Locality != null ? Property.Location.Locality.Name : "")</div>
+         </div>
+         <div class="row">
+             <div class="col-md-4">Prefared Tenants</div>
+             <div class="col-md-8">@Property.TenantsId.Name</div>
+         </div>
+             @if (Property.ForRent == true)
+             {
+                 <div class="row">
+                     <div class="col-md-4">Rent Rate : @Property.RentRate.ToString() </div>
+                     <div class="col-md-8">@(Property.Negotiable ? "Rent Rate is Negotiable" : "")</div>
+                 </div>
+             }
+             @if (Property.ForSale == true)
+             {
+                 <div class="row">
+                     <div class="col-md-4">Sale Rate : @Property.SaleRate.ToString() </div>
+                     <div class="col-md-8">@(Property.Negotiable ? "Sale Rate is Negotiable" : "")</div>
+                 </div>
+             }
+         <div class="row">
+             <div class="col-md-4">Contact Detail's</div>
+             <div class="col-md-8">@Property.Phone</div>
+         </div>
+         <div class="row">
+             <div class="col-md-4">About property</div>
+             <div class="col-md-8">@Property.Message</div>
+         </div>
+         @if(ShowFooter == true)
+         {
+     <div class="row">
+         <div class="col-md-4">
+             <a class="btn btn-success" href="#">Edit</a>
+         </div>
+         <div class="col-md-4">
+             <button class="btn btn-danger" type="button" @onclick="DeleteAsync">Delete</button>
+         </div>
+     </div>
+         }
+     </div>
+</div>
+<ConfirmModal @ref="DeleteConfirmation" ConfirmationChanged="ConfirmDelete"
+         ConfirmationMessage=@($"Are you sure you want to delete \"{Property.PropertyType}\"")></ConfirmModal>
+
